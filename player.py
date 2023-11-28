@@ -19,7 +19,7 @@ class Player(pygame.sprite.Sprite):
         self.gravity = 1
         self.last_update = pygame.time.get_ticks()
         self.max_health = max_health
-        self.health = 50
+        self.health = max_health
         #shoot
         self.shoot = False
         self.shoot_cooldown = 0

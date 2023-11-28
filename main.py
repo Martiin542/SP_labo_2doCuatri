@@ -38,7 +38,7 @@ class Game:
             self.draw()
             self.update()
 
-            print(self.player.health)
+            print(self.enemy.health)
         
             self.clock.tick(FPS)
         self.close()
@@ -56,20 +56,13 @@ class Game:
         if self.player.shoot:
             if self.player.shoot_cooldown == 0 and self.player.ammo > 0:
                 self.player.shoot_cooldown = 20
-                Bullet(self.bullet_group, self.player.rect.centerx + (0.6 * self.player.rect.size[0] * self.player.direction), self.player.rect.centery, self.player.direction)
+                Bullet(self.bullet_group, self.player.rect.centerx + (0.6 * self.player.rect.size[0] * self.player.direction), self.player.rect.centery, self.player.direction, self.enemy, self.player)
                 self.player.ammo -= 1
         if self.player.grande and self.player.grande_thrown == False and self.player.num_grandes > 0:
-            Granade(self.granade_group, self.player.rect.centerx + (0.6 * self.player.rect.size[0] * self.player.direction), self.player.rect.top, self.player.direction, self.explosion_group)
+            Granade(self.granade_group, self.player.rect.centerx + (0.6 * self.player.rect.size[0] * self.player.direction), self.player.rect.top, self.player.direction, self.enemy, self.player)
             self.player.grande_thrown = True
             self.player.num_grandes -= 1
 
-        if self.enemy.active:
-            hits_to_enemys = pygame.sprite.spritecollide(self.enemy, self.bullet_group, True)
-            for _ in hits_to_enemys:
-                    self.enemy.health -= 25
-            granades_to_enemys = pygame.sprite.spritecollide(self.enemy, self.explosion_group, False)
-            for _ in granades_to_enemys:
-                self.enemy.health -= 1
         #grups actualization
         self.bullet_group.update()
         self.granade_group.update()
