@@ -32,13 +32,33 @@ death = [pygame.transform.scale(pygame.image.load('assets\\img\\CHARACTER_SPRITE
          pygame.transform.scale(pygame.image.load('assets\\img\\CHARACTER_SPRITES\\death\\6.png'), (60, 60)),
          pygame.transform.scale(pygame.image.load('assets\\img\\CHARACTER_SPRITES\\death\\7.png'), (60, 60))]
 
+death_left = [pygame.transform.flip(image_death, True, False) for image_death in death]
+
+explosion = [pygame.transform.scale(pygame.image.load('assets\\img\\CHARACTER_SPRITES\\EXTRAS\\explosion\\exp1.png'), (60, 60)),
+             pygame.transform.scale(pygame.image.load('assets\\img\\CHARACTER_SPRITES\EXTRAS\\explosion\\exp2.png'), (60, 60)),
+             pygame.transform.scale(pygame.image.load('assets\\img\\CHARACTER_SPRITES\EXTRAS\\explosion\\exp3.png'), (60, 60)),
+             pygame.transform.scale(pygame.image.load('assets\\img\\CHARACTER_SPRITES\EXTRAS\\explosion\\exp4.png'), (60, 60)),
+             pygame.transform.scale(pygame.image.load('assets\\img\\CHARACTER_SPRITES\EXTRAS\\explosion\\exp5.png'), (60, 60))]
+
 animation_lists = {
     'idle': idle,
     'idle_left': idle_left,
     'run_right': run_right,
     'run_left': run_left,
     'jump': jump,
-    'death': death
+    'death_right': death,
+    'death_left': death_left,
+    'explosion': explosion
 }
 
 bullet_img = pygame.image.load('assets\\img\\CHARACTER_SPRITES\EXTRAS\\bullet.png')
+grande_img = pygame.image.load('assets\\img\\CHARACTER_SPRITES\EXTRAS\\grenade.png')
+
+healt_box_img = pygame.image.load('assets\\img\\CHARACTER_SPRITES\EXTRAS\\health_box.png')
+ammo_box_img = pygame.image.load('assets\\img\\CHARACTER_SPRITES\EXTRAS\\ammo_box.png')
+granade_box_img = pygame.image.load('assets\\img\\CHARACTER_SPRITES\EXTRAS\\grenade_box.png')
+item_boxes = {
+    'health': healt_box_img,
+    'ammo': ammo_box_img,
+    'granade': granade_box_img
+}

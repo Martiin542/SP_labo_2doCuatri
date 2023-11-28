@@ -4,9 +4,11 @@ from config import *
 from import_images import *
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, groups, animation_lists, ammo, x, y) -> None:
+    def __init__(self, groups, animation_lists, ammo, granades, x, y, max_health) -> None:
         super().__init__(groups) 
+        self.active = True
         self.animation_lists = animation_lists
+        self.time_animation = 150
         self.current_animation = self.animation_lists['idle']
         self.current_sprite = 0
         self.image = self.current_animation[self.current_sprite]
@@ -16,11 +18,17 @@ class Player(pygame.sprite.Sprite):
         self.vel_y = 0  # Velocidad vertical
         self.gravity = 1
         self.last_update = pygame.time.get_ticks()
-        self.time_animation = 150
-        self.shooting = False
+        self.max_health = max_health
+        self.health = 50
+        #shoot
+        self.shoot = False
         self.shoot_cooldown = 0
         self.ammo = ammo
-        self.start_ammo = self.ammo #ver si sirve ???
+        #self.start_ammo = self.ammo #ver si sirve ???
+        #grande
+        self.grande = False
+        self.grande_thrown = False
+        self.num_grandes = granades
 
     def update(self):
         keys = pygame.key.get_pressed()
@@ -54,9 +62,15 @@ class Player(pygame.sprite.Sprite):
             self.current_animation = self.animation_lists['jump']
         
         if keys[K_SPACE]:
-            self.shooting = True
+            self.shoot = True
         else:
-            self.shooting = False
+            self.shoot = False
+        
+        if keys[K_q]:
+            self.grande = True
+        else:
+            self.grande = False
+            self.grande_thrown = False
             
         self.animate()
 
@@ -70,19 +84,17 @@ class Player(pygame.sprite.Sprite):
             self.current_sprite = (self.current_sprite + 1) % len(self.current_animation)
             self.image = self.current_animation[self.current_sprite]
 
-class Bullet(pygame.sprite.Sprite):
-    def __init__(self, groups, x, y, direction) -> None:
-        super().__init__(groups)
-        self.speed = 10
-        self.image = bullet_img
-        self.rect = self.image.get_rect()
-        self.rect.center = (x, y)
-        self.direction = direction
-        #self.player = player
+class HealthBar():
+    def __init__(self, x, y, health, max_health) -> None:
+        self.x = x
+        self.y = y
+        self.health = health
+        self.max_health = max_health
     
-    def update(self):
-        self.rect.x += (self.direction * self.speed)
-
-        if self.rect.right < 0 or self.rect.left > WIDTH:
-            self.kill()
+    def draw(self, screen, helath):
+        self.health = helath
+        ratio = self.health / self.max_health
+        pygame.draw.rect(screen, 'Black', (self.x - 2, self.y - 2, 154, 24))
+        pygame.draw.rect(screen, 'Red', (self.x, self.y, 150, 20))
+        pygame.draw.rect(screen, 'Green', (self.x, self.y, 150 * ratio, 20))
 
