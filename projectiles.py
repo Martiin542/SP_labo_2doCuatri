@@ -4,7 +4,7 @@ from config import *
 from import_images import *
 
 class Bullet(pygame.sprite.Sprite):
-    def __init__(self, groups, x, y, direction, enemy, player) -> None:
+    def __init__(self, groups, x, y, direction, enemy_group, player) -> None:
         super().__init__(groups)
         self.speed = 10
         self.image = bullet_img
@@ -12,7 +12,7 @@ class Bullet(pygame.sprite.Sprite):
         self.rect.center = (x, y)
         self.direction = direction
         self.bullet_group = groups
-        self.enemy = enemy
+        self.enemies = enemy_group
         self.player = player
 
     
@@ -22,10 +22,12 @@ class Bullet(pygame.sprite.Sprite):
         if self.rect.right < 0 or self.rect.left > WIDTH:
             self.kill()
         
-        if self.enemy.active:
-            hits_to_enemys = pygame.sprite.spritecollide(self.enemy, self.bullet_group, True)
-            for _ in hits_to_enemys:
-                    self.enemy.health -= 25
+        for enemy in self.enemies:
+            if enemy.active:
+                hits_to_enemys = pygame.sprite.spritecollide(enemy, self.bullet_group, True)
+                for _ in hits_to_enemys:
+                        enemy.health -= 25
+        if self.player.active:
             hits_to_player = pygame.sprite.spritecollide(self.player, self.bullet_group, True)
             for _ in hits_to_player:
                     self.player.health -= 25
@@ -65,7 +67,7 @@ class Granade(pygame.sprite.Sprite):
             Explosion(self.explosion_group, self.rect.x, self.rect.y, animation_lists, self.enemy, self.player)
 
 class Explosion(pygame.sprite.Sprite):
-    def __init__(self, groups, x, y, animation_lists, enemy, player) -> None:
+    def __init__(self, groups, x, y, animation_lists, enemy_group, player) -> None:
         super().__init__(groups)
         self.animation_lists = animation_lists
         self.time_animation = 150
@@ -75,18 +77,24 @@ class Explosion(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(topleft = (x,y - 30))
         self.last_update = pygame.time.get_ticks()
         self.explosion_group = groups
-        self.enemy = enemy
+        self.enemies = enemy_group
         self.player = player
+        self.collided_with_enemy = False
+        self.collided_with_player = False
+        self.reset_flags()
+    
+    def reset_flags(self):
         self.collided_with_enemy = False
         self.collided_with_player = False
     
     def update(self):
         self.animate()
-        if self.enemy.active and not self.collided_with_enemy:
-            granades_to_enemys = pygame.sprite.spritecollide(self.enemy, self.explosion_group, False)
-            for _ in granades_to_enemys:
-                self.enemy.health -= 50
-            self.collided_with_enemy = True
+        for enemy in self.enemies:
+            if enemy.active and not self.collided_with_enemy:
+                granades_to_enemys = pygame.sprite.spritecollide(enemy, self.explosion_group, False)
+                for _ in granades_to_enemys:
+                    enemy.health -= 50
+                self.collided_with_enemy = True
         
         if self.player.active and not self.collided_with_player:
             granades_to_player = pygame.sprite.spritecollide(self.player, self.explosion_group, False)

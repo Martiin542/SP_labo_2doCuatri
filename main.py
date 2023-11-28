@@ -23,8 +23,9 @@ class Game:
         self.explosion_group = pygame.sprite.Group()
         self.item_box_group = pygame.sprite.Group()
         #inicializo el player y le paso los grupos de sprite donde pertenece
-        self.player = Player(self.player_group, animation_lists, 15, 2, 0, HEIGHT, 100) #hay q pasarle una lista de los grupos q tiene mi player
+        self.player = Player(self.player_group, animation_lists, 15, 6, 0, HEIGHT, 100) #hay q pasarle una lista de los grupos q tiene mi player
         self.enemy = Enemy(self.enemy_group, animation_lists, 450, HEIGHT - 60, 100)
+        self.enemy2 = Enemy(self.enemy_group, animation_lists, 600, HEIGHT - 60, 100)
         self.item_box = ItemBox(self.item_box_group, 300, HEIGHT, 'health', self.player)
         self.health_bar = HealthBar(10, 10, self.player.health, self.player.max_health)
 
@@ -39,6 +40,7 @@ class Game:
             self.update()
 
             print(self.enemy.health)
+            print(self.enemy2.health)
         
             self.clock.tick(FPS)
         self.close()
@@ -56,10 +58,10 @@ class Game:
         if self.player.shoot:
             if self.player.shoot_cooldown == 0 and self.player.ammo > 0:
                 self.player.shoot_cooldown = 20
-                Bullet(self.bullet_group, self.player.rect.centerx + (0.6 * self.player.rect.size[0] * self.player.direction), self.player.rect.centery, self.player.direction, self.enemy, self.player)
+                Bullet(self.bullet_group, self.player.rect.centerx + (0.6 * self.player.rect.size[0] * self.player.direction), self.player.rect.centery, self.player.direction, self.enemy_group, self.player)
                 self.player.ammo -= 1
         if self.player.grande and self.player.grande_thrown == False and self.player.num_grandes > 0:
-            Granade(self.granade_group, self.player.rect.centerx + (0.6 * self.player.rect.size[0] * self.player.direction), self.player.rect.top, self.player.direction, self.enemy, self.player)
+            Granade(self.granade_group, self.player.rect.centerx + (0.6 * self.player.rect.size[0] * self.player.direction), self.player.rect.top, self.player.direction, self.enemy_group, self.player)
             self.player.grande_thrown = True
             self.player.num_grandes -= 1
 
