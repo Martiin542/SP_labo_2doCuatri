@@ -64,7 +64,7 @@ class Granade(pygame.sprite.Sprite):
         self.timer -= 1
         if self.timer <= 0:
             self.kill()
-            Explosion(self.explosion_group, self.rect.x, self.rect.y, animation_lists, self.enemy, self.player)
+            Explosion(self.explosion_group, self.rect.x, self.rect.y, player_animation_lists, self.enemy, self.player)
 
 class Explosion(pygame.sprite.Sprite):
     def __init__(self, groups, x, y, animation_lists, enemy_group, player) -> None:
