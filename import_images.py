@@ -84,7 +84,7 @@ enemy_animation_lists = {
     'idle_left': idle_left_enemy,
     'run_right': run_right_enemy,
     'run_left': run_left_enemy,
-    'death_right': death_left,
+    'death_right': death_enemy,
     'death_left': death_left_enemy
 }
 
@@ -101,3 +101,14 @@ item_boxes = {
     'granade': granade_box_img,
     'coin': coin_img
 }
+
+
+dirt_img = pygame.image.load('assets\\img\\PLATAFORM\\dirt.png')
+
+jump_sound = pygame.mixer.Sound("assets\\sounds\\jump.wav")
+jump_sound.set_volume(0.5)
+shoot_sound = pygame.mixer.Sound("assets\\sounds\\shot.wav")
+shoot_sound.set_volume(0.2)
+granade_sound = pygame.mixer.Sound("assets\\sounds\\grenade.wav")
+granade_sound.set_volume(0.2)
+music = pygame.mixer.Sound("assets\\sounds\\music2.mp3")

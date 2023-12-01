@@ -14,8 +14,8 @@ class Enemy(pygame.sprite.Sprite):
         self.current_sprite = 0
         self.image = self.current_animation[self.current_sprite]
         self.rect = self.image.get_rect(topleft = (x,y))
-        self.speed = 0
-        self.direction = 1
+        self.speed = 2
+        self.direction = -1
         self.last_update = pygame.time.get_ticks()
         self.time_animation = 150
         self.health = max_health
@@ -54,10 +54,11 @@ class Enemy(pygame.sprite.Sprite):
                 if self.shoot_cooldown == 0:
                     self.shoot_cooldown = 20
                     Bullet(self.bullet_group, self.rect.centerx + (0.6 * self.rect.size[0] * self.direction), self.rect.centery, self.direction, self.enemy_group, self.player)
+                    shoot_sound.play()
             else:
                 self.rect.x += self.direction * self.speed
                 self.vision.center = (self.rect.centerx + 75 * self.direction, self.rect.centery)
-                pygame.draw.rect(screen, 'Red', self.vision)
+                #pygame.draw.rect(screen, 'Red', self.vision)
                 if self.rect.right > WIDTH or self.rect.left < 400:
                     self.direction *= -1
                 

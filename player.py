@@ -4,7 +4,7 @@ from config import *
 from import_images import *
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, groups, animation_lists, ammo, granades, x, y, max_health) -> None:
+    def __init__(self, groups, animation_lists, ammo, granades, x, y, max_health, plataform_list) -> None:
         super().__init__(groups) 
         self.active = True
         self.animation_lists = animation_lists
@@ -20,6 +20,7 @@ class Player(pygame.sprite.Sprite):
         self.last_update = pygame.time.get_ticks()
         self.max_health = max_health
         self.health = max_health
+        self.plataform_list = plataform_list
         #shoot
         self.shoot = False
         self.shoot_cooldown = 0
@@ -30,8 +31,18 @@ class Player(pygame.sprite.Sprite):
         self.grande_thrown = False
         self.num_grandes = granades
 
+        self.in_plataform = False
+
     def update(self):
         keys = pygame.key.get_pressed()
+
+        self.in_plataform = False
+        for platform in self.plataform_list:
+            if pygame.sprite.collide_rect(self, platform):
+                self.rect.bottom = platform.rect.top
+                self.vel_y = 0  # Reset vertical velocity when landing on a platform
+                self.in_plataform = True
+                break
 
         self.vel_y += self.gravity
         self.rect.y += self.vel_y
@@ -57,9 +68,10 @@ class Player(pygame.sprite.Sprite):
                 self.current_animation = self.animation_lists['idle_left']
             
         
-        if keys[K_w] and self.rect.bottom == HEIGHT:
+        if keys[K_w] and self.rect.bottom == HEIGHT or self.in_plataform:
             self.vel_y = -15
             self.current_animation = self.animation_lists['jump']
+            jump_sound.play()
         
         if keys[K_SPACE]:
             self.shoot = True
@@ -71,6 +83,7 @@ class Player(pygame.sprite.Sprite):
         else:
             self.grande = False
             self.grande_thrown = False
+            
             
         self.animate()
 

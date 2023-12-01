@@ -31,6 +31,8 @@ class Bullet(pygame.sprite.Sprite):
             hits_to_player = pygame.sprite.spritecollide(self.player, self.bullet_group, True)
             for _ in hits_to_player:
                     self.player.health -= 25
+        
+        # shoot_sound.play()
 
 class Granade(pygame.sprite.Sprite):
     def __init__(self, groups, x, y, direction, enemy, player) -> None:
@@ -101,6 +103,8 @@ class Explosion(pygame.sprite.Sprite):
             for _ in granades_to_player:
                 self.player.health -= 50
             self.collided_with_player = True
+
+        granade_sound.play()
         
 
     def animate(self):
