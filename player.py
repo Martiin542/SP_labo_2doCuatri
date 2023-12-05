@@ -13,6 +13,7 @@ class Player(pygame.sprite.Sprite):
         self.current_sprite = 0
         self.image = self.current_animation[self.current_sprite]
         self.rect = self.image.get_rect(topleft = (x,y))
+        self.score = 0
         self.speed = 5
         self.direction = 1
         self.vel_y = 0  # Velocidad vertical
@@ -25,24 +26,15 @@ class Player(pygame.sprite.Sprite):
         self.shoot = False
         self.shoot_cooldown = 0
         self.ammo = ammo
-        #self.start_ammo = self.ammo #ver si sirve ???
         #grande
         self.grande = False
         self.grande_thrown = False
         self.num_grandes = granades
-
-        self.in_plataform = False
+        #plataformas bug
+        self.can_jump = False
 
     def update(self):
         keys = pygame.key.get_pressed()
-
-        self.in_plataform = False
-        for platform in self.plataform_list:
-            if pygame.sprite.collide_rect(self, platform):
-                self.rect.bottom = platform.rect.top
-                self.vel_y = 0  # Reset vertical velocity when landing on a platform
-                self.in_plataform = True
-                break
 
         self.vel_y += self.gravity
         self.rect.y += self.vel_y
@@ -67,10 +59,19 @@ class Player(pygame.sprite.Sprite):
             elif self.direction == -1:
                 self.current_animation = self.animation_lists['idle_left']
             
+        if self.rect.bottom == HEIGHT:
+            self.can_jump = True
         
-        if keys[K_w] and self.rect.bottom == HEIGHT or self.in_plataform:
+        for platform in self.plataform_list:
+            if pygame.sprite.collide_rect(self, platform):
+                self.rect.bottom = platform.rect.top
+                self.vel_y = 0  # Reset vertical velocity when landing on a platform
+                self.can_jump = True
+
+        if keys[K_w] and self.can_jump:
             self.vel_y = -15
             self.current_animation = self.animation_lists['jump']
+            self.can_jump = False
             jump_sound.play()
         
         if keys[K_SPACE]:
@@ -84,7 +85,9 @@ class Player(pygame.sprite.Sprite):
             self.grande = False
             self.grande_thrown = False
             
-            
+        if self.health <= 0:
+            self.die()
+
         self.animate()
 
         if self.shoot_cooldown > 0:
@@ -96,6 +99,24 @@ class Player(pygame.sprite.Sprite):
             self.last_update = now
             self.current_sprite = (self.current_sprite + 1) % len(self.current_animation)
             self.image = self.current_animation[self.current_sprite]
+
+    def die(self):
+        self.active = False
+        self.health = 0
+        self.speed = 0
+        self.vel_y = 0
+        if self.direction == 1:
+            self.current_animation = self.animation_lists['death_right']
+        elif self.direction == -1:
+            self.current_animation = self.animation_lists['death_left']
+        
+        self.image = self.current_animation[self.current_sprite]
+
+        if self.current_sprite == len(self.current_animation) - 1:
+            self.kill()
+        else:
+            self.animate()
+
 
 class HealthBar():
     def __init__(self, x, y, health, max_health) -> None:

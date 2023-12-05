@@ -112,3 +112,6 @@ shoot_sound.set_volume(0.2)
 granade_sound = pygame.mixer.Sound("assets\\sounds\\grenade.wav")
 granade_sound.set_volume(0.2)
 music = pygame.mixer.Sound("assets\\sounds\\music2.mp3")
+
+#menu
+bg_menu = pygame.image.load('assets\\img\\MENUIMG\\menu_bg.png')

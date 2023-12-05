@@ -29,7 +29,7 @@ class Enemy(pygame.sprite.Sprite):
             self.rect.bottom = HEIGHT
 
         if self.health <= 0:
-            self.restet_stats()
+            self.die()
         
         if self.shoot_cooldown > 0:
             self.shoot_cooldown -= 1
@@ -67,7 +67,7 @@ class Enemy(pygame.sprite.Sprite):
                 elif self.direction == -1:
                     self.current_animation = self.animation_lists['run_left']
     
-    def restet_stats(self):
+    def die(self):
         self.active = False
         self.health = 0
         self.speed = 0
