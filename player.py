@@ -2,6 +2,8 @@ import pygame
 from pygame.locals import *
 from config import *
 from import_images import *
+from functions import *
+
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, groups, animation_lists, ammo, granades, x, y, max_health, plataform_list) -> None:
@@ -14,6 +16,7 @@ class Player(pygame.sprite.Sprite):
         self.image = self.current_animation[self.current_sprite]
         self.rect = self.image.get_rect(topleft = (x,y))
         self.score = 0
+        self.max_score = 0
         self.speed = 5
         self.direction = 1
         self.vel_y = 0  # Velocidad vertical
@@ -89,6 +92,9 @@ class Player(pygame.sprite.Sprite):
             self.die()
 
         self.animate()
+        if self.score > self.max_score:
+            self.max_score = self.score
+            save_max_score(self.max_score)
 
         if self.shoot_cooldown > 0:
             self.shoot_cooldown -= 1
@@ -116,7 +122,6 @@ class Player(pygame.sprite.Sprite):
             self.kill()
         else:
             self.animate()
-
 
 class HealthBar():
     def __init__(self, x, y, health, max_health) -> None:

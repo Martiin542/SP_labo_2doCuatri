@@ -15,12 +15,14 @@ class ItemBox(pygame.sprite.Sprite):
     def update(self) -> None:
         if pygame.sprite.collide_rect(self, self.player):
             if self.item_type == 'ammo':
-                self.player.ammo += 15
+                self.player.ammo += 10
             if self.item_type == 'health':
                 self.player.health += 25
                 if self.player.health > self.player.max_health:
                     self.player.health = self.player.max_health
             if self.item_type == 'granade':
                 self.player.num_grandes += 2
+            if self.item_type == 'coin':
+                self.player.score += 15
 
             self.kill()

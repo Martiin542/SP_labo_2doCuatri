@@ -5,8 +5,8 @@ pygame.init()
 screen_info = pygame.display.Info()
 screen_width = screen_info.current_w
 screen_height = screen_info.current_h
-WIDTH = 800
-HEIGHT = 600
+WIDTH = screen_width
+HEIGHT = screen_height
 
 FPS = 60
 WIDTH_PLAYER = 50

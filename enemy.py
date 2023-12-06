@@ -5,7 +5,7 @@ from import_images import *
 from projectiles import Bullet
 
 class Enemy(pygame.sprite.Sprite):
-    def __init__(self, groups, animation_lists, x,y, max_health, player, bullet_group) -> None:
+    def __init__(self, groups, animation_lists, x,y, max_health, player, bullet_group, a, b) -> None:
         super().__init__(groups)
         self.enemy_group = groups
         self.active = True
@@ -22,7 +22,9 @@ class Enemy(pygame.sprite.Sprite):
         self.player = player
         self.bullet_group = bullet_group
         self.shoot_cooldown = 0
-        self.vision = pygame.Rect(0, 0, 150, 20)
+        self.vision = pygame.Rect(0, 0, 1000, 20)
+        self.a = a
+        self.b = b
     
     def update(self, screen):
         if self.rect.bottom > HEIGHT:
@@ -59,7 +61,7 @@ class Enemy(pygame.sprite.Sprite):
                 self.rect.x += self.direction * self.speed
                 self.vision.center = (self.rect.centerx + 75 * self.direction, self.rect.centery)
                 #pygame.draw.rect(screen, 'Red', self.vision)
-                if self.rect.right > WIDTH or self.rect.left < 400:
+                if self.rect.right > self.b or self.rect.left < self.a:
                     self.direction *= -1
                 
                 if self.direction == 1:
@@ -71,6 +73,7 @@ class Enemy(pygame.sprite.Sprite):
         self.active = False
         self.health = 0
         self.speed = 0
+        self.player.score += 15
         if self.direction == 1:
             self.current_animation = self.animation_lists['death_right']
         elif self.direction == -1:
