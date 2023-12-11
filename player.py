@@ -3,6 +3,7 @@ from pygame.locals import *
 from config import *
 from import_images import *
 from functions import *
+from data import save_max_score
 
 
 class Player(pygame.sprite.Sprite):

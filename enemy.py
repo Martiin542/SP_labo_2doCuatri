@@ -5,7 +5,7 @@ from import_images import *
 from projectiles import Bullet
 
 class Enemy(pygame.sprite.Sprite):
-    def __init__(self, groups, animation_lists, x,y, max_health, player, bullet_group, a, b) -> None:
+    def __init__(self, groups, animation_lists, x,y, max_health, player, bullet_group, a, b, speed, direction) -> None:
         super().__init__(groups)
         self.enemy_group = groups
         self.active = True
@@ -14,19 +14,19 @@ class Enemy(pygame.sprite.Sprite):
         self.current_sprite = 0
         self.image = self.current_animation[self.current_sprite]
         self.rect = self.image.get_rect(topleft = (x,y))
-        self.speed = 2
-        self.direction = -1
+        self.speed = speed
+        self.direction = direction
         self.last_update = pygame.time.get_ticks()
         self.time_animation = 150
         self.health = max_health
         self.player = player
         self.bullet_group = bullet_group
         self.shoot_cooldown = 0
-        self.vision = pygame.Rect(0, 0, 1000, 20)
+        self.vision = pygame.Rect(0, 0, 450, 20)
         self.a = a
         self.b = b
     
-    def update(self, screen):
+    def update(self):
         if self.rect.bottom > HEIGHT:
             self.rect.bottom = HEIGHT
 
@@ -36,7 +36,7 @@ class Enemy(pygame.sprite.Sprite):
         if self.shoot_cooldown > 0:
             self.shoot_cooldown -= 1
 
-        self.ia(screen)
+        self.ia()
         self.animate()
 
     def animate(self):
@@ -46,7 +46,7 @@ class Enemy(pygame.sprite.Sprite):
             self.current_sprite = (self.current_sprite + 1) % len(self.current_animation)
             self.image = self.current_animation[self.current_sprite]
 
-    def ia(self, screen):
+    def ia(self):
         if self.active and self.player.active:
             if self.vision.colliderect(self.player.rect):
                 if self.direction == 1:
@@ -59,8 +59,8 @@ class Enemy(pygame.sprite.Sprite):
                     shoot_sound.play()
             else:
                 self.rect.x += self.direction * self.speed
-                self.vision.center = (self.rect.centerx + 75 * self.direction, self.rect.centery)
-                #pygame.draw.rect(screen, 'Red', self.vision)
+                self.vision.center = (self.rect.centerx + 250 * self.direction, self.rect.centery)
+
                 if self.rect.right > self.b or self.rect.left < self.a:
                     self.direction *= -1
                 
@@ -68,6 +68,12 @@ class Enemy(pygame.sprite.Sprite):
                     self.current_animation = self.animation_lists['run_right']
                 elif self.direction == -1:
                     self.current_animation = self.animation_lists['run_left']
+            
+            if self.speed == 0:
+                if self.direction == 1:
+                    self.current_animation = self.animation_lists['idle']
+                elif self.direction == -1:
+                    self.current_animation = self.animation_lists['idle_left']
     
     def die(self):
         self.active = False
